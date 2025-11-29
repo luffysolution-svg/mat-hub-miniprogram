@@ -1,3 +1,4 @@
+<wxs src="./filter-panel.wxs" module="utils" />
 <view class="filter-mask {{visible ? 'show' : ''}}" bindtap="onClose">
   <view class="filter-panel {{visible ? 'show' : ''}}" catchtap="preventBubble">
     <view class="panel-header">
@@ -47,7 +48,7 @@
           <view
             wx:for="{{materialSources}}"
             wx:key="id"
-            class="source-chip {{selectedSources.length === 0 || selectedSources.includes(item.id) ? 'active' : ''}}"
+            class="source-chip {{utils.isSourceActive(selectedSources, item.id) ? 'active' : ''}}"
             data-source="{{item.id}}"
             bindtap="onSourceToggle"
           >
@@ -63,7 +64,7 @@
           <view
             wx:for="{{literatureSources}}"
             wx:key="id"
-            class="source-chip {{selectedSources.length === 0 || selectedSources.includes(item.id) ? 'active' : ''}}"
+            class="source-chip {{utils.isSourceActive(selectedSources, item.id) ? 'active' : ''}}"
             data-source="{{item.id}}"
             bindtap="onSourceToggle"
           >
