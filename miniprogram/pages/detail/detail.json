@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "Detail",
+  "usingComponents": {
+    "skeleton": "/components/skeleton/skeleton",
+    "empty": "/components/empty/empty"
+  }
+}

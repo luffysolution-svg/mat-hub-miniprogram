@@ -1,0 +1,235 @@
+.container {
+  height: 100vh;
+  padding: 24rpx;
+  padding-bottom: 120rpx;
+  box-sizing: border-box;
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  right: 40rpx;
+  bottom: 180rpx;
+  width: 88rpx;
+  height: 88rpx;
+  background: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(64, 150, 255, 0.4);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 99;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.back-to-top:active {
+  transform: scale(0.9);
+}
+
+.back-top-icon {
+  font-size: 40rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.type-toggle {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.type-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  background-color: var(--color-card);
+  border: 2rpx solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  transition: all 0.2s;
+}
+
+.type-item.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.results-section {
+  margin-top: 8rpx;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+  padding: 0 8rpx;
+}
+
+.results-count {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.results-sort {
+  font-size: var(--font-xs);
+  color: var(--color-warning);
+}
+
+.results-list {
+  padding-bottom: 32rpx;
+}
+
+.load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+}
+
+.load-more-text {
+  font-size: var(--font-sm);
+  color: var(--color-text-tertiary);
+}
+
+.no-more {
+  text-align: center;
+  padding: 24rpx;
+  font-size: var(--font-sm);
+  color: var(--color-text-tertiary);
+}
+
+.initial-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 48rpx;
+  text-align: center;
+}
+
+.initial-icon-text {
+  font-size: 160rpx;
+  margin-bottom: 32rpx;
+}
+
+.initial-title {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 16rpx;
+}
+
+.initial-desc {
+  font-size: var(--font-sm);
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+  max-width: 500rpx;
+}
+
+/* Search Help Card */
+.search-help-card {
+  width: 100%;
+  max-width: 640rpx;
+  margin-top: 48rpx;
+  background: linear-gradient(135deg, rgba(64, 150, 255, 0.08) 0%, rgba(64, 150, 255, 0.02) 100%);
+  border: 1rpx solid rgba(64, 150, 255, 0.15);
+  border-radius: 24rpx;
+  padding: 32rpx;
+}
+
+.help-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.help-card-icon {
+  font-size: 36rpx;
+}
+
+.help-card-title {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.syntax-tags {
+  display: flex;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.syntax-tag {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 8rpx;
+  background-color: var(--color-card);
+  border-radius: 16rpx;
+}
+
+.tag-code {
+  font-family: monospace;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.tag-label {
+  font-size: 20rpx;
+  color: var(--color-text-tertiary);
+}
+
+.help-divider {
+  height: 1rpx;
+  background-color: var(--color-divider);
+  margin: 24rpx 0;
+}
+
+.examples-label {
+  display: block;
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: 16rpx;
+}
+
+.example-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  justify-content: center;
+}
+
+.example-chip {
+  font-size: 22rpx;
+  line-height: 1;
+  color: var(--color-primary);
+  background-color: var(--color-card);
+  padding: 16rpx 20rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(64, 150, 255, 0.2);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.example-chip:active {
+  background-color: var(--color-primary);
+  color: #fff;
+}

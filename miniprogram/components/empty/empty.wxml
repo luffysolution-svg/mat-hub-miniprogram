@@ -1,0 +1,12 @@
+<view class="empty-container">
+  <text class="empty-icon-text">{{type === 'search' ? '🔍' : (type === 'history' ? '📋' : (type === 'favorites' ? '⭐' : (type === 'error' ? '⚠️' : '📭')))}}</text>
+  <text class="empty-title">{{title || defaultContent[type].title}}</text>
+  <text class="empty-desc">{{description || defaultContent[type].desc}}</text>
+  <button
+    class="btn btn-primary btn-sm"
+    wx:if="{{showAction}}"
+    bindtap="onAction"
+  >
+    {{actionText}}
+  </button>
+</view>

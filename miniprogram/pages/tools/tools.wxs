@@ -1,0 +1,33 @@
+// tools.wxs - 视图层辅助函数
+
+// 元素分类颜色映射
+var CATEGORY_COLORS = {
+  'alkali metal': '#ff6b6b',
+  'alkaline earth metal': '#ffd93d',
+  'transition metal': '#6bcb77',
+  'post-transition metal': '#4d96ff',
+  'metalloid': '#9d65c9',
+  'polyatomic nonmetal': '#ff9a3c',
+  'diatomic nonmetal': '#ff6f91',
+  'noble gas': '#00d9ff',
+  'lanthanide': '#ff85a2',
+  'actinide': '#c9b1ff',
+  'unknown': '#8d8d8d'
+};
+
+// 获取元素颜色
+function getElementColor(category) {
+  return CATEGORY_COLORS[category] || '#8d8d8d';
+}
+
+// 获取指定位置的元素
+function getElementAtPosition(positionMap, period, group) {
+  if (!positionMap) return null;
+  var key = period + '-' + group;
+  return positionMap[key] || null;
+}
+
+module.exports = {
+  getElementColor: getElementColor,
+  getElementAtPosition: getElementAtPosition
+};

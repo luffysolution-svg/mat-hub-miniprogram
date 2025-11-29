@@ -1,0 +1,41 @@
+var formatNumber = function(num, decimals) {
+  if (num === null || num === undefined) {
+    return '--'
+  }
+  if (decimals === undefined) {
+    decimals = 4
+  }
+  var n = parseFloat(num)
+  if (n !== n) {
+    return '--'
+  }
+  if (n === Math.floor(n)) {
+    return '' + n
+  }
+  var factor = Math.pow(10, decimals)
+  var rounded = Math.round(n * factor) / factor
+  return '' + rounded
+}
+
+var formatSci = function(num, decimals) {
+  if (num === null || num === undefined) {
+    return '--'
+  }
+  if (decimals === undefined) {
+    decimals = 2
+  }
+  var n = parseFloat(num)
+  if (n !== n) {
+    return '--'
+  }
+  var abs = Math.abs(n)
+  if (abs !== 0 && (abs < 0.001 || abs >= 10000)) {
+    return n.toExponential(decimals)
+  }
+  return formatNumber(n, decimals)
+}
+
+module.exports = {
+  formatNumber: formatNumber,
+  formatSci: formatSci
+}

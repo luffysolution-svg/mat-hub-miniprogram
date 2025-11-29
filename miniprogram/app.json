@@ -1,0 +1,59 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/detail/detail",
+    "pages/history/history",
+    "pages/favorites/favorites",
+    "pages/settings/settings",
+    "pages/tools/tools"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#1f5fbf",
+    "navigationBarTitleText": "Mat-Hub",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f7fb",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#8c939d",
+    "selectedColor": "#1f5fbf",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "Search",
+        "iconPath": "images/icons/search-gray.png",
+        "selectedIconPath": "images/icons/search-active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "History",
+        "iconPath": "images/icons/history.png",
+        "selectedIconPath": "images/icons/history-active.png"
+      },
+      {
+        "pagePath": "pages/favorites/favorites",
+        "text": "Favorites",
+        "iconPath": "images/icons/star.png",
+        "selectedIconPath": "images/icons/star-active.png"
+      },
+      {
+        "pagePath": "pages/tools/tools",
+        "text": "Tools",
+        "iconPath": "images/icons/tools.png",
+        "selectedIconPath": "images/icons/tools-active.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "Settings",
+        "iconPath": "images/icons/settings.png",
+        "selectedIconPath": "images/icons/settings-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

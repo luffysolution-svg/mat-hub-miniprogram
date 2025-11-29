@@ -1,0 +1,100 @@
+<view class="container">
+  <!-- Header Actions -->
+  <view class="header-bar" wx:if="{{favorites.length > 0}}">
+    <view class="search-wrap">
+      <image class="search-icon" src="/images/icons/search-gray.png" />
+      <input
+        class="search-input"
+        placeholder="Search favorites..."
+        value="{{searchQuery}}"
+        bindinput="onSearchInput"
+      />
+      <view class="clear-btn" wx:if="{{searchQuery}}" bindtap="onClearSearch">
+        <text class="clear-text">✕</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Filter Tabs -->
+  <view class="filter-tabs" wx:if="{{favorites.length > 0}}">
+    <view
+      class="filter-tab {{filterType === 'all' ? 'active' : ''}}"
+      data-type="all"
+      bindtap="onFilterChange"
+    >All ({{favorites.length}})</view>
+    <view
+      class="filter-tab {{filterType === 'material' ? 'active' : ''}}"
+      data-type="material"
+      bindtap="onFilterChange"
+    >Materials</view>
+    <view
+      class="filter-tab {{filterType === 'literature' ? 'active' : ''}}"
+      data-type="literature"
+      bindtap="onFilterChange"
+    >Literature</view>
+  </view>
+
+  <!-- Action Bar -->
+  <view class="action-bar" wx:if="{{favorites.length > 0}}">
+    <text class="result-count">{{filteredFavorites.length}} items</text>
+    <view class="action-btns">
+      <text class="action-btn" bindtap="exportAll">Export All</text>
+      <text class="action-btn" bindtap="toggleEdit">{{editing ? 'Done' : 'Edit'}}</text>
+      <text class="action-btn danger" bindtap="clearAll">Clear</text>
+    </view>
+  </view>
+
+  <!-- Favorites List -->
+  <view class="favorites-list" wx:if="{{filteredFavorites.length > 0}}">
+    <view
+      class="favorite-card"
+      wx:for="{{filteredFavorites}}"
+      wx:key="id"
+      data-index="{{index}}"
+      bindtap="onItemTap"
+    >
+      <view class="card-header">
+        <view class="card-tags">
+          <text class="tag tag-{{item.type}}">
+            {{item.type === 'material' ? 'Material' : 'Literature'}}
+          </text>
+          <text class="tag tag-source">{{item.sourceName}}</text>
+        </view>
+        <view
+          class="remove-btn"
+          wx:if="{{editing}}"
+          data-index="{{index}}"
+          catchtap="onRemove"
+        >
+          <text class="remove-text">🗑</text>
+        </view>
+      </view>
+
+      <text class="card-title">{{item.title}}</text>
+
+      <view class="card-meta" wx:if="{{item.formattedAuthors || item.year}}">
+        <text wx:if="{{item.formattedAuthors}}">{{item.formattedAuthors}}</text>
+        <text wx:if="{{item.year}}">({{item.year}})</text>
+      </view>
+
+      <view class="card-footer">
+        <text class="save-time">Saved {{item.timeAgo}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Empty States -->
+  <empty
+    wx:if="{{favorites.length === 0}}"
+    type="favorites"
+    title="No Favorites Yet"
+    description="Save items for quick access by tapping the star icon"
+  />
+
+  <empty
+    wx:elif="{{filteredFavorites.length === 0}}"
+    type="search"
+    title="No Matches"
+    description="Try different search terms or filters"
+  />
+</view>

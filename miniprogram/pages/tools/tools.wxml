@@ -1,0 +1,294 @@
+<!--pages/tools/tools.wxml-->
+<wxs src="./tools.wxs" module="utils" />
+
+<view class="container">
+  <!-- Tab 切换 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 'periodic' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="periodic"
+    >
+      <text class="tab-text">元素周期表</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'calculator' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="calculator"
+    >
+      <text class="tab-text">分子质量计算</text>
+    </view>
+  </view>
+
+  <!-- 元素周期表 Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'periodic'}}">
+    <!-- 分类筛选 -->
+    <scroll-view class="category-scroll" scroll-x enable-flex>
+      <view class="category-list">
+        <view
+          class="category-chip {{selectedCategory === '' ? 'active' : ''}}"
+          bindtap="selectCategory"
+          data-category=""
+        >
+          全部
+        </view>
+        <view
+          wx:for="{{categories}}"
+          wx:key="id"
+          class="category-chip {{selectedCategory === item.id ? 'active' : ''}}"
+          style="--chip-color: {{item.color}}"
+          bindtap="selectCategory"
+          data-category="{{item.id}}"
+        >
+          {{item.name}} ({{item.count}})
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 搜索框 -->
+    <view class="search-box">
+      <input
+        class="search-input"
+        placeholder="搜索元素名称、符号或原子序数"
+        value="{{searchQuery}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="doSearch"
+      />
+      <view class="search-icon" bindtap="doSearch">
+        <text>🔍</text>
+      </view>
+    </view>
+
+    <!-- 元素周期表网格 -->
+    <scroll-view class="periodic-table-scroll" scroll-x wx:if="{{!searchQuery && !selectedCategory}}">
+      <view class="periodic-table">
+        <!-- 主表格 - 7行18列 -->
+        <view class="pt-row" wx:for="{{[1,2,3,4,5,6,7]}}" wx:for-item="period" wx:key="*this">
+          <view
+            wx:for="{{[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]}}"
+            wx:for-item="group"
+            wx:key="*this"
+            class="pt-cell {{utils.getElementAtPosition(elementPositionMap, period, group) ? 'has-element' : 'empty'}}"
+            style="{{utils.getElementAtPosition(elementPositionMap, period, group) ? 'background-color:' + utils.getElementColor(utils.getElementAtPosition(elementPositionMap, period, group).category) : ''}}"
+            bindtap="onCellTap"
+            data-period="{{period}}"
+            data-group="{{group}}"
+          >
+            <block wx:if="{{utils.getElementAtPosition(elementPositionMap, period, group)}}">
+              <text class="el-number">{{utils.getElementAtPosition(elementPositionMap, period, group).number}}</text>
+              <text class="el-symbol">{{utils.getElementAtPosition(elementPositionMap, period, group).symbol}}</text>
+            </block>
+          </view>
+        </view>
+
+        <!-- 镧系和锕系分隔 -->
+        <view class="pt-separator"></view>
+
+        <!-- 镧系 (57-71) -->
+        <view class="pt-row lanthanides">
+          <view class="pt-label">镧系</view>
+          <view
+            wx:for="{{lanthanides}}"
+            wx:key="symbol"
+            class="pt-cell has-element"
+            style="background-color: {{utils.getElementColor(item.category)}}"
+            bindtap="showElementDetail"
+            data-element="{{item}}"
+          >
+            <text class="el-number">{{item.number}}</text>
+            <text class="el-symbol">{{item.symbol}}</text>
+          </view>
+        </view>
+
+        <!-- 锕系 (89-103) -->
+        <view class="pt-row actinides">
+          <view class="pt-label">锕系</view>
+          <view
+            wx:for="{{actinides}}"
+            wx:key="symbol"
+            class="pt-cell has-element"
+            style="background-color: {{utils.getElementColor(item.category)}}"
+            bindtap="showElementDetail"
+            data-element="{{item}}"
+          >
+            <text class="el-number">{{item.number}}</text>
+            <text class="el-symbol">{{item.symbol}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 搜索/筛选结果列表 -->
+    <view class="elements-list" wx:if="{{searchQuery || selectedCategory}}">
+      <view class="result-count">
+        找到 {{filteredElements.length}} 个元素
+      </view>
+      <view
+        wx:for="{{filteredElements}}"
+        wx:key="symbol"
+        class="element-card"
+        bindtap="showElementDetail"
+        data-element="{{item}}"
+      >
+        <view class="element-card-left" style="background-color: {{utils.getElementColor(item.category)}}">
+          <text class="card-number">{{item.number}}</text>
+          <text class="card-symbol">{{item.symbol}}</text>
+        </view>
+        <view class="element-card-right">
+          <view class="card-name">{{item.name_zh}} / {{item.name}}</view>
+          <view class="card-info">
+            <text class="card-mass">{{item.atomic_mass}} u</text>
+            <text class="card-category" style="color: {{utils.getElementColor(item.category)}}">{{item.category_zh}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分子质量计算器 Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'calculator'}}">
+    <view class="calc-section">
+      <view class="section-title">输入化学式</view>
+      <view class="formula-input-box">
+        <input
+          class="formula-input"
+          placeholder="例如: H2O, CaCO3, CuSO4·5H2O"
+          value="{{formula}}"
+          bindinput="onFormulaInput"
+          confirm-type="done"
+          bindconfirm="calculateMolarMass"
+        />
+        <button class="calc-btn" bindtap="calculateMolarMass">计算</button>
+      </view>
+      <view class="formula-tips">
+        <text class="tip-title">支持格式:</text>
+        <text class="tip-item">• 基本化学式: H2O, NaCl, C6H12O6</text>
+        <text class="tip-item">• 带括号: Ca(OH)2, Mg3(PO4)2</text>
+        <text class="tip-item">• 结晶水: CuSO4·5H2O (用 · 或 . 分隔)</text>
+      </view>
+    </view>
+
+    <!-- 计算结果 -->
+    <view class="calc-result" wx:if="{{calcResult}}">
+      <view class="result-header">
+        <text class="result-formula">{{calcResult.formula}}</text>
+        <text class="result-mass">{{calcResult.molar_mass_formatted}}</text>
+      </view>
+
+      <view class="result-detail">
+        <view class="detail-title">元素组成</view>
+        <view class="composition-table">
+          <view class="table-header">
+            <text class="col-symbol">元素</text>
+            <text class="col-count">数量</text>
+            <text class="col-mass">原子量</text>
+            <text class="col-total">小计</text>
+          </view>
+          <view
+            wx:for="{{calcResult.components}}"
+            wx:key="symbol"
+            class="table-row"
+          >
+            <text class="col-symbol">{{item.symbol}} ({{item.name_zh}})</text>
+            <text class="col-count">{{item.count}}</text>
+            <text class="col-mass">{{item.atomic_mass}}</text>
+            <text class="col-total">{{item.subtotal_mass}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 计算历史 -->
+    <view class="calc-history" wx:if="{{calcHistory.length > 0}}">
+      <view class="history-header">
+        <text class="history-title">计算历史</text>
+        <text class="history-clear" bindtap="clearHistory">清空</text>
+      </view>
+      <view class="history-list">
+        <view
+          wx:for="{{calcHistory}}"
+          wx:key="index"
+          class="history-item"
+          bindtap="useHistoryFormula"
+          data-formula="{{item.formula}}"
+        >
+          <text class="history-formula">{{item.formula}}</text>
+          <text class="history-mass">{{item.molar_mass_formatted}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 常用化学式快捷按钮 -->
+    <view class="quick-formulas">
+      <view class="section-title">常用化学式</view>
+      <view class="quick-list">
+        <view
+          wx:for="{{quickFormulas}}"
+          wx:key="formula"
+          class="quick-item"
+          bindtap="useQuickFormula"
+          data-formula="{{item.formula}}"
+        >
+          <text class="quick-formula">{{item.formula}}</text>
+          <text class="quick-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 元素详情弹窗 -->
+  <view class="element-modal" wx:if="{{showModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header" style="background-color: {{utils.getElementColor(selectedElement.category)}}">
+        <view class="modal-number">{{selectedElement.number}}</view>
+        <view class="modal-symbol">{{selectedElement.symbol}}</view>
+        <view class="modal-name">{{selectedElement.name_zh}} / {{selectedElement.name}}</view>
+        <view class="modal-mass">{{selectedElement.atomic_mass}} u</view>
+      </view>
+      <view class="modal-body">
+        <view class="info-row">
+          <text class="info-label">分类</text>
+          <text class="info-value" style="color: {{utils.getElementColor(selectedElement.category)}}">{{selectedElement.category_zh}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">周期 / 族</text>
+          <text class="info-value">第{{selectedElement.period}}周期 / 第{{selectedElement.group || '-'}}族</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">区块</text>
+          <text class="info-value">{{selectedElement.block}}区</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">电子排布</text>
+          <text class="info-value">{{selectedElement.electron_configuration}}</text>
+        </view>
+        <view class="info-row" wx:if="{{selectedElement.electronegativity}}">
+          <text class="info-label">电负性</text>
+          <text class="info-value">{{selectedElement.electronegativity}}</text>
+        </view>
+        <view class="info-row" wx:if="{{selectedElement.density}}">
+          <text class="info-label">密度</text>
+          <text class="info-value">{{selectedElement.density}} g/cm³</text>
+        </view>
+        <view class="info-row" wx:if="{{selectedElement.melt}}">
+          <text class="info-label">熔点</text>
+          <text class="info-value">{{selectedElement.melt}} K</text>
+        </view>
+        <view class="info-row" wx:if="{{selectedElement.boil}}">
+          <text class="info-label">沸点</text>
+          <text class="info-value">{{selectedElement.boil}} K</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">相态</text>
+          <text class="info-value">{{selectedElement.phase}}</text>
+        </view>
+        <view class="info-summary" wx:if="{{selectedElement.summary}}">
+          <text class="summary-title">简介</text>
+          <text class="summary-text">{{selectedElement.summary}}</text>
+        </view>
+      </view>
+      <view class="modal-close" bindtap="closeModal">关闭</view>
+    </view>
+  </view>
+</view>

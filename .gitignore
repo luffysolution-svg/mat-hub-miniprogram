@@ -1,0 +1,15 @@
+# WeChat Mini Program
+node_modules/
+miniprogram_npm/
+.DS_Store
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Build
+dist/
+
+# Local config
+project.private.config.json

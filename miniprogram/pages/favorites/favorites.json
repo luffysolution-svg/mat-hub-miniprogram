@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "Favorites",
+  "usingComponents": {
+    "empty": "/components/empty/empty"
+  }
+}
