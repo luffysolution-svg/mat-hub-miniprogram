@@ -57,13 +57,21 @@ Component({
 
     onSourceToggle(e) {
       const sourceId = e.currentTarget.dataset.source;
-      const selected = [...this.properties.selectedSources];
-      const index = selected.indexOf(sourceId);
+      let selected = [...this.properties.selectedSources];
 
-      if (index > -1) {
-        selected.splice(index, 1);
+      // 如果当前为空（全选状态），点击一个源就只选中它
+      if (selected.length === 0) {
+        selected = [sourceId];
       } else {
-        selected.push(sourceId);
+        const index = selected.indexOf(sourceId);
+        if (index > -1) {
+          // 已选中，取消选中
+          selected.splice(index, 1);
+          // 如果取消后没有选中的，保持空数组（全选）
+        } else {
+          // 未选中，添加选中
+          selected.push(sourceId);
+        }
       }
 
       this.triggerEvent('sourcechange', { sources: selected });
