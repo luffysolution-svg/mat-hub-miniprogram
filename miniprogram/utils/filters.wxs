@@ -35,7 +35,52 @@ var formatSci = function(num, decimals) {
   return formatNumber(n, decimals)
 }
 
+// 数组转字符串，用分隔符连接
+var join = function(arr, separator) {
+  if (!arr || arr.length === 0) {
+    return ''
+  }
+  if (separator === undefined) {
+    separator = ','
+  }
+  var result = ''
+  for (var i = 0; i < arr.length; i++) {
+    if (i > 0) {
+      result = result + separator
+    }
+    result = result + (arr[i] || '')
+  }
+  return result
+}
+
+// 数组切片
+var slice = function(arr, start, end) {
+  if (!arr || arr.length === 0) {
+    return []
+  }
+  if (start === undefined) {
+    start = 0
+  }
+  if (end === undefined) {
+    end = arr.length
+  }
+  var result = []
+  for (var i = start; i < end && i < arr.length; i++) {
+    result.push(arr[i])
+  }
+  return result
+}
+
+// 数组切片后连接
+var sliceJoin = function(arr, start, end, separator) {
+  var sliced = slice(arr, start, end)
+  return join(sliced, separator)
+}
+
 module.exports = {
   formatNumber: formatNumber,
-  formatSci: formatSci
+  formatSci: formatSci,
+  join: join,
+  slice: slice,
+  sliceJoin: sliceJoin
 }
