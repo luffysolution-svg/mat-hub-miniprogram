@@ -1,53 +1,42 @@
-const config = require('../config/index');
+// 简化的HTTP请求工具
+// 保留用于未来可能的扩展（如调用公开API）
 
-const RETRY_CONFIG = {
-  maxRetries: 2,
-  retryDelay: 1000
-};
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function buildQueryString(params) {
-  if (!params) return '';
-
-  return Object.keys(params)
-    .filter(key => params[key] != null && params[key] !== '')
-    .map(key => {
-      const value = params[key];
-      if (Array.isArray(value)) {
-        return value.map(v => `${key}=${encodeURIComponent(v)}`).join('&');
-      }
-      if (typeof value === 'object') {
-        return `${key}=${encodeURIComponent(JSON.stringify(value))}`;
-      }
-      return `${key}=${encodeURIComponent(value)}`;
-    })
-    .join('&');
-}
-
-function doRequest(fullUrl, options) {
+function request(url, options = {}) {
   return new Promise((resolve, reject) => {
     wx.request({
-      url: fullUrl,
+      url,
       method: options.method || 'GET',
-      header: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+      data: options.data,
+      header: options.header || {
+        'Content-Type': 'application/json'
       },
-      timeout: options.timeout || config.REQUEST_TIMEOUT,
+      timeout: options.timeout || 10000,
       success: (res) => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(res.data);
         } else {
-          const error = new Error(res.data?.detail || 'Request failed');
-          error.statusCode = res.statusCode;
-          error.response = res.data;
-          reject(error);
+          reject(new Error(`请求失败: ${res.statusCode}`));
         }
       },
       fail: (err) => {
+        reject(err);
+      }
+    });
+  });
+}
+
+module.exports = {
+  request,
+  get(url, params = {}) {
+    const query = Object.keys(params)
+      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .join('&');
+    const fullUrl = query ? `${url}?${query}` : url;
+    return request(fullUrl, { method: 'GET' });
+  },
+  post(url, data = {}) {
+    return request(url, { method: 'POST', data });
+  }
         let message = 'Network error';
         let isTimeout = false;
         if (err.errMsg && err.errMsg.includes('timeout')) {

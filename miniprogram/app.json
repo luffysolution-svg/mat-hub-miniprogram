@@ -1,55 +1,54 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/detail/detail",
-    "pages/history/history",
-    "pages/favorites/favorites",
-    "pages/settings/settings",
-    "pages/tools/tools"
+    "pages/home/home",
+    "pages/periodic-table/periodic-table",
+    "pages/calculator/calculator",
+    "pages/journal/journal",
+    "pages/mine/mine"
   ],
   "window": {
     "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#1f5fbf",
-    "navigationBarTitleText": "Mat-Hub",
+    "navigationBarBackgroundColor": "#2c3e50",
+    "navigationBarTitleText": "科研工具箱",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#f5f7fb",
+    "backgroundColor": "#f8f9fa",
     "enablePullDownRefresh": false
   },
   "tabBar": {
-    "color": "#8c939d",
-    "selectedColor": "#1f5fbf",
+    "color": "#95a5a6",
+    "selectedColor": "#3498db",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/index/index",
-        "text": "Search",
-        "iconPath": "images/icons/search-gray.png",
-        "selectedIconPath": "images/icons/search-active.png"
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "images/icons/home.png",
+        "selectedIconPath": "images/icons/home-active.png"
       },
       {
-        "pagePath": "pages/history/history",
-        "text": "History",
-        "iconPath": "images/icons/history.png",
-        "selectedIconPath": "images/icons/history-active.png"
+        "pagePath": "pages/periodic-table/periodic-table",
+        "text": "周期表",
+        "iconPath": "images/icons/periodic.png",
+        "selectedIconPath": "images/icons/periodic-active.png"
       },
       {
-        "pagePath": "pages/favorites/favorites",
-        "text": "Favorites",
-        "iconPath": "images/icons/star.png",
-        "selectedIconPath": "images/icons/star-active.png"
+        "pagePath": "pages/calculator/calculator",
+        "text": "计算器",
+        "iconPath": "images/icons/calculator.png",
+        "selectedIconPath": "images/icons/calculator-active.png"
       },
       {
-        "pagePath": "pages/tools/tools",
-        "text": "Tools",
-        "iconPath": "images/icons/tools.png",
-        "selectedIconPath": "images/icons/tools-active.png"
+        "pagePath": "pages/journal/journal",
+        "text": "期刊",
+        "iconPath": "images/icons/journal.png",
+        "selectedIconPath": "images/icons/journal-active.png"
       },
       {
-        "pagePath": "pages/settings/settings",
-        "text": "Settings",
-        "iconPath": "images/icons/settings.png",
-        "selectedIconPath": "images/icons/settings-active.png"
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/icons/mine.png",
+        "selectedIconPath": "images/icons/mine-active.png"
       }
     ]
   },

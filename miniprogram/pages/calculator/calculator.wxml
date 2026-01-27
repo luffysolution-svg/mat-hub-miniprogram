@@ -1,0 +1,321 @@
+<view class="container">
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 'molar_mass' ? 'active' : ''}}"
+      data-tab="molar_mass"
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">⚗️</text>
+      <text class="tab-label">分子质量</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'solution' ? 'active' : ''}}"
+      data-tab="solution"
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">🧪</text>
+      <text class="tab-label">溶液配制</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'concentration' ? 'active' : ''}}"
+      data-tab="concentration"
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">📊</text>
+      <text class="tab-label">浓度转换</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'unit' ? 'active' : ''}}"
+      data-tab="unit"
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">📏</text>
+      <text class="tab-label">单位转换</text>
+    </view>
+  </view>
+
+  <!-- 分子质量计算 -->
+  <scroll-view class="content" scroll-y wx:if="{{activeTab === 'molar_mass'}}">
+    <view class="calc-section">
+      <view class="section-title">输入化学式</view>
+      <view class="input-group">
+        <input
+          class="formula-input"
+          type="text"
+          placeholder="例如: H2SO4"
+          value="{{formula}}"
+          bindinput="onFormulaInput"
+        />
+        <button class="calc-btn" bindtap="calculateMolarMass">计算</button>
+      </view>
+
+      <!-- 快捷公式 -->
+      <view class="quick-formulas">
+        <text class="quick-label">常用化学式:</text>
+        <view class="formula-tags">
+          <view
+            class="formula-tag"
+            wx:for="{{quickFormulas}}"
+            wx:key="formula"
+            data-formula="{{item.formula}}"
+            bindtap="quickFill"
+          >
+            {{item.formula}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 计算结果 -->
+      <view class="result-box" wx:if="{{molarResult}}">
+        <view class="result-header">
+          <text class="result-formula">{{molarResult.formula}}</text>
+          <text class="result-mass">{{molarResult.molarMass}} g/mol</text>
+        </view>
+        <view class="result-breakdown">
+          <view class="breakdown-title">组成分析:</view>
+          <view
+            class="breakdown-item"
+            wx:for="{{molarResult.breakdown}}"
+            wx:key="element"
+          >
+            <text class="element">{{item.element}}</text>
+            <text class="count">× {{item.count}}</text>
+            <text class="mass">{{item.mass}} g/mol</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 历史记录 -->
+      <view class="history-section" wx:if="{{calcHistory.length > 0}}">
+        <view class="section-title">最近计算</view>
+        <view
+          class="history-item"
+          wx:for="{{calcHistory}}"
+          wx:key="timestamp"
+          data-formula="{{item.formula}}"
+          bindtap="quickFill"
+        >
+          <text class="history-formula">{{item.formula}}</text>
+          <text class="history-mass">{{item.molarMass}} g/mol</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 溶液配制计算 -->
+  <scroll-view class="content" scroll-y wx:if="{{activeTab === 'solution'}}">
+    <view class="calc-section">
+      <view class="section-title">输入参数（留空一个待计算）</view>
+
+      <view class="param-group">
+        <text class="param-label">溶质质量 (g)</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="质量"
+          value="{{solutionParams.mass}}"
+          data-field="mass"
+          bindinput="onSolutionInput"
+        />
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">溶液体积 (L)</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="体积"
+          value="{{solutionParams.volume}}"
+          data-field="volume"
+          bindinput="onSolutionInput"
+        />
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">摩尔质量 (g/mol)</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="摩尔质量"
+          value="{{solutionParams.molarMass}}"
+          data-field="molarMass"
+          bindinput="onSolutionInput"
+        />
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">浓度 (mol/L)</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="浓度"
+          value="{{solutionParams.concentration}}"
+          data-field="concentration"
+          bindinput="onSolutionInput"
+        />
+      </view>
+
+      <view class="btn-group">
+        <button class="calc-btn primary" bindtap="calculateSolution">计算</button>
+        <button class="calc-btn" bindtap="clearForm">清空</button>
+      </view>
+
+      <!-- 计算结果 -->
+      <view class="result-box" wx:if="{{solutionResult}}">
+        <view class="result-type">{{solutionResult.type}}</view>
+        <view class="result-value">
+          {{solutionResult.mass || solutionResult.volume || solutionResult.concentration}}
+        </view>
+        <view class="result-desc">{{solutionResult.description}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 浓度转换 -->
+  <scroll-view class="content" scroll-y wx:if="{{activeTab === 'concentration'}}">
+    <view class="calc-section">
+      <view class="section-title">浓度单位转换</view>
+
+      <view class="param-group">
+        <text class="param-label">浓度值</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="输入数值"
+          value="{{concentrationParams.value}}"
+          data-field="value"
+          bindinput="onConcentrationInput"
+        />
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">从</text>
+        <picker
+          class="param-picker"
+          mode="selector"
+          range="{{concentrationUnits}}"
+          range-key="label"
+          value="{{concentrationParams.fromUnit}}"
+          bindchange="onFromUnitChange"
+        >
+          <view class="picker-view">
+            {{concentrationParams.fromUnit}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">到</text>
+        <picker
+          class="param-picker"
+          mode="selector"
+          range="{{concentrationUnits}}"
+          range-key="label"
+          value="{{concentrationParams.toUnit}}"
+          bindchange="onToUnitChange"
+        >
+          <view class="picker-view">
+            {{concentrationParams.toUnit}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">摩尔质量 (g/mol)</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="溶质的摩尔质量"
+          value="{{concentrationParams.molarMass}}"
+          data-field="molarMass"
+          bindinput="onConcentrationInput"
+        />
+      </view>
+
+      <view class="btn-group">
+        <button class="calc-btn primary" bindtap="convertConcentration">转换</button>
+        <button class="calc-btn" bindtap="clearForm">清空</button>
+      </view>
+
+      <!-- 转换结果 -->
+      <view class="result-box" wx:if="{{concentrationResult}}">
+        <view class="result-header">
+          <text class="result-label">转换结果:</text>
+          <text class="result-value">{{concentrationResult.value}} {{concentrationResult.unit}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 单位转换 -->
+  <scroll-view class="content" scroll-y wx:if="{{activeTab === 'unit'}}">
+    <view class="calc-section">
+      <view class="section-title">物理单位转换</view>
+
+      <view class="param-group">
+        <text class="param-label">转换类别</text>
+        <picker
+          class="param-picker"
+          mode="selector"
+          range="{{unitCategories}}"
+          range-key="name"
+          bindchange="onUnitCategoryChange"
+        >
+          <view class="picker-view">
+            {{unitCategories[0].name}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">数值</text>
+        <input
+          class="param-input"
+          type="digit"
+          placeholder="输入数值"
+          value="{{unitParams.value}}"
+          data-field="value"
+          bindinput="onUnitInput"
+        />
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">从单位</text>
+        <input
+          class="param-input"
+          type="text"
+          placeholder="如: g"
+          value="{{unitParams.fromUnit}}"
+          data-field="fromUnit"
+          bindinput="onUnitInput"
+        />
+      </view>
+
+      <view class="param-group">
+        <text class="param-label">到单位</text>
+        <input
+          class="param-input"
+          type="text"
+          placeholder="如: kg"
+          value="{{unitParams.toUnit}}"
+          data-field="toUnit"
+          bindinput="onUnitInput"
+        />
+      </view>
+
+      <view class="btn-group">
+        <button class="calc-btn primary" bindtap="convertUnit">转换</button>
+        <button class="calc-btn" bindtap="clearForm">清空</button>
+      </view>
+
+      <!-- 转换结果 -->
+      <view class="result-box" wx:if="{{unitResult}}">
+        <view class="result-header">
+          <text class="result-label">转换结果:</text>
+          <text class="result-value">{{unitResult.value}} {{unitResult.unit}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

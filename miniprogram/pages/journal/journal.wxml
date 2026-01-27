@@ -1,0 +1,197 @@
+<view class="container">
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 'feeds' ? 'active' : ''}}"
+      data-tab="feeds"
+      bindtap="switchTab"
+    >
+      <text class="tab-label">文献动态</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'subscriptions' ? 'active' : ''}}"
+      data-tab="subscriptions"
+      bindtap="switchTab"
+    >
+      <text class="tab-label">订阅管理</text>
+    </view>
+  </view>
+
+  <!-- 文献动态 -->
+  <scroll-view class="content" scroll-y wx:if="{{activeTab === 'feeds'}}">
+    <!-- 无订阅提示 -->
+    <view class="empty-state" wx:if="{{subscriptions.length === 0}}">
+      <text class="empty-icon">📚</text>
+      <text class="empty-text">还没有订阅</text>
+      <text class="empty-hint">点击下方"订阅管理"添加关键词</text>
+      <button class="empty-btn" bindtap="switchTab" data-tab="subscriptions">
+        去添加订阅
+      </button>
+    </view>
+
+    <!-- 文献列表 -->
+    <view class="paper-list" wx:if="{{subscriptions.length > 0}}">
+      <!-- 刷新按钮 -->
+      <view class="refresh-bar">
+        <button class="refresh-btn" bindtap="onRefresh" loading="{{loading}}">
+          {{loading ? '加载中...' : '刷新文献'}}
+        </button>
+        <text class="paper-count">共 {{papers.length}} 篇</text>
+      </view>
+
+      <!-- 文献卡片 -->
+      <view
+        class="paper-card"
+        wx:for="{{papers}}"
+        wx:key="id"
+      >
+        <view class="paper-header">
+          <view class="paper-category">{{item.category}}</view>
+          <view class="paper-date">{{item.publishDate}}</view>
+        </view>
+
+        <view class="paper-title">{{item.title}}</view>
+
+        <view class="paper-authors">
+          <text wx:for="{{item.authors}}" wx:key="*this" wx:for-item="author">
+            {{author}}{{index < item.authors.length - 1 ? ', ' : ''}}
+          </text>
+        </view>
+
+        <view class="paper-abstract">{{item.abstract}}</view>
+
+        <view class="paper-keywords">
+          <text
+            class="keyword-tag"
+            wx:for="{{item.keywords}}"
+            wx:key="*this"
+            wx:for-item="keyword"
+          >
+            #{{keyword}}
+          </text>
+        </view>
+
+        <view class="paper-actions">
+          <view class="action-btn" data-id="{{item.id}}" bindtap="viewPaper">
+            <text class="action-icon">🔗</text>
+            <text class="action-text">查看原文</text>
+          </view>
+          <view class="action-btn" data-id="{{item.id}}" bindtap="favoritePaper">
+            <text class="action-icon">{{isFavorite(item.id) ? '❤️' : '🤍'}}</text>
+            <text class="action-text">{{isFavorite(item.id) ? '已收藏' : '收藏'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载提示 -->
+      <view class="loading-tip" wx:if="{{papers.length === 0 && !loading}}">
+        暂无文献数据
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 订阅管理 -->
+  <scroll-view class="content" scroll-y wx:if="{{activeTab === 'subscriptions'}}">
+    <view class="subscription-section">
+      <!-- 添加按钮 -->
+      <button class="add-sub-btn" bindtap="showAddSubscription">
+        <text class="btn-icon">+</text>
+        <text class="btn-text">添加订阅</text>
+      </button>
+
+      <!-- 订阅列表 -->
+      <view class="subscription-list">
+        <view
+          class="subscription-card"
+          wx:for="{{subscriptions}}"
+          wx:key="id"
+        >
+          <view class="sub-header">
+            <view class="sub-keyword">{{item.keyword}}</view>
+            <switch
+              class="sub-switch"
+              checked="{{item.enabled}}"
+              data-id="{{item.id}}"
+              bindchange="toggleSubscription"
+            />
+          </view>
+
+          <view class="sub-info">
+            <text class="sub-category">分类: {{item.category}}</text>
+          </view>
+
+          <view class="sub-actions">
+            <button
+              class="delete-btn"
+              data-id="{{item.id}}"
+              bindtap="deleteSubscription"
+            >
+              删除
+            </button>
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-subs" wx:if="{{subscriptions.length === 0}}">
+          <text class="empty-text">还没有订阅</text>
+          <text class="empty-hint">点击上方按钮添加订阅</text>
+        </view>
+      </view>
+
+      <!-- 说明 -->
+      <view class="info-section">
+        <view class="info-title">使用说明</view>
+        <view class="info-content">
+          <text class="info-text">1. 添加感兴趣的关键词和分类</text>
+          <text class="info-text">2. 系统会定期获取相关文献</text>
+          <text class="info-text">3. 可随时开关或删除订阅</text>
+          <text class="info-text">4. 支持收藏喜欢的文献</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 添加订阅弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="{{}}">
+      <view class="modal-header">
+        <text class="modal-title">添加订阅</text>
+        <view class="close-btn" bindtap="closeModal">✕</view>
+      </view>
+
+      <view class="modal-body">
+        <view class="form-group">
+          <text class="form-label">关键词</text>
+          <input
+            class="form-input"
+            type="text"
+            placeholder="例如: 超导、石墨烯"
+            value="{{newSubscription.keyword}}"
+            bindinput="onKeywordInput"
+          />
+        </view>
+
+        <view class="form-group">
+          <text class="form-label">分类</text>
+          <picker
+            class="form-picker"
+            mode="selector"
+            range="{{categories}}"
+            range-key="name"
+            bindchange="onCategoryChange"
+          >
+            <view class="picker-view">
+              <text>{{categories[0].name}}</text>
+              <text class="picker-arrow">›</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="closeModal">取消</button>
+        <button class="modal-btn confirm" bindtap="addSubscription">确定</button>
+      </view>
+    </view>
+  </view>
+</view>
