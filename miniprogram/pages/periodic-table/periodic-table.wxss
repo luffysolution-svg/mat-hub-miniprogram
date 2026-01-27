@@ -1,0 +1,347 @@
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding-bottom: 120rpx;
+}
+
+/* 搜索区域 */
+.search-section {
+  padding: 24rpx 32rpx;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  padding: 0 80rpx 0 48rpx;
+  background: #f8f9fa;
+  border-radius: 36rpx;
+  font-size: 28rpx;
+}
+
+.search-icon, .clear-icon {
+  position: absolute;
+  right: 32rpx;
+  font-size: 32rpx;
+  color: #95a5a6;
+}
+
+.clear-icon {
+  padding: 8rpx;
+}
+
+/* 分类筛选 */
+.category-scroll {
+  white-space: nowrap;
+  background: #fff;
+  padding: 24rpx 0;
+}
+
+.category-list {
+  display: inline-flex;
+  padding: 0 32rpx;
+  gap: 16rpx;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 16rpx 32rpx;
+  border: 2rpx solid;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: #2c3e50;
+  transition: all 0.3s;
+}
+
+.category-item.active {
+  color: #fff;
+  background: currentColor;
+  border-color: transparent;
+}
+
+.category-name {
+  white-space: nowrap;
+}
+
+/* 元素列表视图 */
+.element-list {
+  height: calc(100vh - 280rpx);
+  padding: 24rpx 32rpx;
+}
+
+.element-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  border-left: 6rpx solid;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.element-number {
+  width: 60rpx;
+  font-size: 24rpx;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+.element-symbol {
+  width: 100rpx;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.element-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #2c3e50;
+}
+
+.element-mass {
+  font-size: 24rpx;
+  color: #7f8c8d;
+}
+
+/* 完整周期表 */
+.periodic-table-wrapper {
+  height: calc(100vh - 280rpx);
+  padding: 24rpx 0;
+}
+
+.periodic-table {
+  padding: 0 16rpx;
+}
+
+.main-table {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 4rpx;
+  margin-bottom: 32rpx;
+}
+
+.element-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8rpx;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+
+.element-cell:active {
+  transform: scale(0.95);
+}
+
+.cell-number {
+  position: absolute;
+  top: 4rpx;
+  left: 6rpx;
+  font-size: 16rpx;
+  color: rgba(0,0,0,0.6);
+  font-weight: 600;
+}
+
+.cell-symbol {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.cell-name {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.9);
+  margin-top: 2rpx;
+}
+
+.element-cell.small .cell-symbol {
+  font-size: 24rpx;
+}
+
+.element-cell.small .cell-name {
+  display: none;
+}
+
+/* 镧系和锕系 */
+.lanthanide-series,
+.actinide-series {
+  margin-bottom: 24rpx;
+}
+
+.series-label {
+  display: block;
+  margin-bottom: 12rpx;
+  padding-left: 8rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.series-elements {
+  display: flex;
+  gap: 4rpx;
+  overflow-x: auto;
+}
+
+/* 弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 85%;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  position: relative;
+  padding: 48rpx 32rpx;
+  color: #fff;
+  text-align: center;
+}
+
+.modal-number {
+  font-size: 32rpx;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.modal-symbol {
+  font-size: 96rpx;
+  font-weight: bold;
+  margin: 16rpx 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.modal-name {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.name-cn {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.name-en {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.close-btn {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  font-size: 40rpx;
+  backdrop-filter: blur(10px);
+}
+
+.modal-body {
+  max-height: 800rpx;
+  padding: 32rpx;
+}
+
+.info-section {
+  margin-bottom: 32rpx;
+}
+
+.info-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 3rpx solid #3498db;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #7f8c8d;
+  margin-bottom: 8rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.electron-config,
+.discovery-year {
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.modal-footer {
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #ecf0f1;
+}
+
+.action-btn {
+  width: 100%;
+  height: 80rpx;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.action-btn::after {
+  border: none;
+}

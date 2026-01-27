@@ -1,0 +1,187 @@
+<view class="container">
+  <!-- 搜索和筛选区域 -->
+  <view class="search-section">
+    <view class="search-box">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索元素名称、符号或原子序数"
+        value="{{searchQuery}}"
+        bindinput="onSearch"
+      />
+      <view class="search-icon" wx:if="{{!searchQuery}}">🔍</view>
+      <view class="clear-icon" wx:if="{{searchQuery}}" bindtap="clearSearch">✕</view>
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="category-scroll" scroll-x>
+    <view class="category-list">
+      <view
+        class="category-item {{selectedCategory === item.id ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        data-category="{{item.id}}"
+        bindtap="filterByCategory"
+        style="border-color: {{item.color}}"
+      >
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 元素列表（搜索/筛选时显示） -->
+  <scroll-view class="element-list" wx:if="{{searchQuery || selectedCategory !== 'all'}}" scroll-y>
+    <view
+      class="element-card"
+      wx:for="{{filteredElements}}"
+      wx:key="atomicNumber"
+      data-number="{{item.atomicNumber}}"
+      bindtap="showElementDetail"
+      style="background: linear-gradient(135deg, {{categoryColors[item.category]}}15, {{categoryColors[item.category]}}35); border-left-color: {{categoryColors[item.category]}}"
+    >
+      <view class="element-number">{{item.atomicNumber}}</view>
+      <view class="element-symbol">{{item.symbol}}</view>
+      <view class="element-name">{{item.name}}</view>
+      <view class="element-mass">{{item.atomicMass}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 完整周期表（默认显示） -->
+  <scroll-view class="periodic-table-wrapper" wx:if="{{!searchQuery && selectedCategory === 'all'}}" scroll-y>
+    <view class="periodic-table">
+      <!-- 主周期表 -->
+      <view class="main-table">
+        <view
+          class="element-cell"
+          wx:for="{{mainTable}}"
+          wx:key="atomicNumber"
+          data-number="{{item.atomicNumber}}"
+          bindtap="showElementDetail"
+          style="background-color: {{categoryColors[item.category]}}; grid-row: {{item.period}}; grid-column: {{item.group}}"
+        >
+          <text class="cell-number">{{item.atomicNumber}}</text>
+          <text class="cell-symbol">{{item.symbol}}</text>
+          <text class="cell-name">{{item.name}}</text>
+        </view>
+      </view>
+
+      <!-- 镧系 -->
+      <view class="lanthanide-series" wx:if="{{lanthanides.length > 0}}">
+        <text class="series-label">镧系</text>
+        <view class="series-elements">
+          <view
+            class="element-cell small"
+            wx:for="{{lanthanides}}"
+            wx:key="atomicNumber"
+            data-number="{{item.atomicNumber}}"
+            bindtap="showElementDetail"
+            style="background-color: {{categoryColors[item.category]}}"
+          >
+            <text class="cell-number">{{item.atomicNumber}}</text>
+            <text class="cell-symbol">{{item.symbol}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 锕系 -->
+      <view class="actinide-series" wx:if="{{actinides.length > 0}}">
+        <text class="series-label">锕系</text>
+        <view class="series-elements">
+          <view
+            class="element-cell small"
+            wx:for="{{actinides}}"
+            wx:key="atomicNumber"
+            data-number="{{item.atomicNumber}}"
+            bindtap="showElementDetail"
+            style="background-color: {{categoryColors[item.category]}}"
+          >
+            <text class="cell-number">{{item.atomicNumber}}</text>
+            <text class="cell-symbol">{{item.symbol}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 元素详情弹窗 -->
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="{{}}">
+      <view class="modal-header" style="background: linear-gradient(135deg, {{categoryColors[selectedElement.category]}}, {{categoryColors[selectedElement.category]}}CC)">
+        <view class="modal-number">{{selectedElement.atomicNumber}}</view>
+        <view class="modal-symbol">{{selectedElement.symbol}}</view>
+        <view class="modal-name">
+          <text class="name-cn">{{selectedElement.name}}</text>
+          <text class="name-en">{{selectedElement.nameEn}}</text>
+        </view>
+        <view class="close-btn" bindtap="closeModal">✕</view>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y>
+        <view class="info-section">
+          <view class="info-title">基本信息</view>
+          <view class="info-grid">
+            <view class="info-item">
+              <text class="info-label">原子序数</text>
+              <text class="info-value">{{selectedElement.atomicNumber}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">相对原子质量</text>
+              <text class="info-value">{{selectedElement.atomicMass}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">周期</text>
+              <text class="info-value">第{{selectedElement.period}}周期</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">族</text>
+              <text class="info-value">第{{selectedElement.group}}族</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="info-section">
+          <view class="info-title">物理性质</view>
+          <view class="info-grid">
+            <view class="info-item">
+              <text class="info-label">熔点</text>
+              <text class="info-value">{{selectedElement.meltingPoint}} K</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">沸点</text>
+              <text class="info-value">{{selectedElement.boilingPoint}} K</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">密度</text>
+              <text class="info-value">{{selectedElement.density}} g/cm³</text>
+            </view>
+            <view class="info-item" wx:if="{{selectedElement.electronegativity}}">
+              <text class="info-label">电负性</text>
+              <text class="info-value">{{selectedElement.electronegativity}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="info-section">
+          <view class="info-title">电子构型</view>
+          <view class="electron-config">
+            <text>{{selectedElement.electronConfig}}</text>
+          </view>
+        </view>
+
+        <view class="info-section" wx:if="{{selectedElement.discoveryYear}}">
+          <view class="info-title">发现年份</view>
+          <view class="discovery-year">
+            <text>{{selectedElement.discoveryYear}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="action-btn" bindtap="toggleFavorite">
+          {{isFavorite() ? '取消收藏' : '收藏元素'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

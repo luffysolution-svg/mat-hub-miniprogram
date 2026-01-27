@@ -1,0 +1,47 @@
+<view class="container">
+  <!-- 顶部欢迎区域 -->
+  <view class="header">
+    <view class="welcome">
+      <text class="title">科研工具箱</text>
+      <text class="subtitle">专为材料与化学研究者设计</text>
+    </view>
+    <view class="stats">
+      <view class="stat-item">
+        <text class="stat-num">{{stats.toolCount}}</text>
+        <text class="stat-label">工具</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{stats.favoriteCount}}</text>
+        <text class="stat-label">收藏</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工具卡片列表 -->
+  <view class="tools-grid">
+    <view
+      class="tool-card"
+      wx:for="{{tools}}"
+      wx:key="id"
+      data-path="{{item.path}}"
+      bindtap="navigateTo"
+      style="border-left-color: {{item.color}}"
+    >
+      <view class="tool-icon" style="background-color: {{item.color}}20">
+        <text class="icon">{{item.icon}}</text>
+      </view>
+      <view class="tool-info">
+        <text class="tool-title">{{item.title}}</text>
+        <text class="tool-desc">{{item.desc}}</text>
+      </view>
+      <view class="tool-arrow">
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer">
+    <text class="footer-text">纯前端实现，数据存储在本地</text>
+  </view>
+</view>
